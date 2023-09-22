@@ -145,7 +145,7 @@ def delete_files(image_path, metadata_path):
     os.remove(image_path)
     os.remove(metadata_path)
 
-def pre_main():
+def main():
     while(True):
         now = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
         image_file_name = f"image-{now}.jpg"
@@ -161,73 +161,6 @@ def pre_main():
 
         put_files(image_file_name, image_local_path, metadata_file_name, metadata_local_path)
 
-        sleep(1800)
-
-
-def main():
-    # Create a client with the MinIO server playground, its access key
-    # and secret key.
-    client = Minio(
-        "192.168.31.111:9000",
-        access_key="EWl5gjA3EteIp9cf8s77",
-        secret_key="Zj0KRckm4yR5IvKPWbCRY9QpfRAJzD6kGo2v7ts7",
-        secure=False
-    )
-
-    bucket_name = 'bug-box'
-
-    # Make 'asiatrip' bucket if not exist.
-    found = client.bucket_exists(bucket_name)
-    if not found:
-        client.make_bucket(bucket_name)
-    else:
-        print(f"Bucket '{bucket_name}' already exists")
-
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(LED_PIN, GPIO.OUT)
-    GPIO.output(LED_PIN, GPIO.HIGH)
-
-    while (1):
-        now = datetime.datetime.now()
-        formatted_date = now.strftime("%d.%m.%Y-%H:%M:%S")
-        file_name = f"image-{formatted_date}.jpg"
-
-        local_path = f'/tmp/{file_name}'
-        print(
-            f"crating picture {local_path}"
-        )
-
-        camera = PiCamera()
-
-        camera.iso = 800
-        # Wait for the automatic gain control to settle
-        sleep(2)
-        # Now fix the values
-        camera.shutter_speed = camera.exposure_speed
-        camera.exposure_mode = 'off'
-        g = camera.awb_gains
-        camera.awb_mode = 'off'
-        camera.awb_gains = g
-
-        camera.start_preview()
-        GPIO.output(LED_PIN, GPIO.LOW)
-        sleep(1)
-
-        camera.capture(local_path)
-        camera.stop_preview()
-        GPIO.output(LED_PIN, GPIO.HIGH)
-
-        camera.close()
-
-        client.fput_object(bucket_name, file_name, local_path, )
-        print(
-            f"picture was pushed to {bucket_name} and {file_name}"
-        )
-
-        print(
-            f"deleting {local_path}"
-        )
-        os.remove(local_path)
         sleep(SLEEP_TIME)
 
 
