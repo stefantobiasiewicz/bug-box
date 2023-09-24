@@ -11,7 +11,7 @@ def light_on():
 def light_off():
     pixels.fill((0, 0, 0))
 
-while(True):
+for i in range(3):
     light_on()
     sleep(1)
     light_off()
