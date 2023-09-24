@@ -81,11 +81,14 @@ def get_env_data():
 
     return { "temp" : sht.temperature, "hum": sht.relative_humidity}
 
-def create_metadata(metadata_file_path):
+def create_metadata(metadata_file_path, bucket_image_path, bucket_metadata_path):
     try:
         logging.info(f"creating metadata for file '{metadata_file_path}'.")
 
         data = get_env_data()
+
+        data["bucket_image_path"] = bucket_image_path
+        data["bucket_metadata_path"] = bucket_metadata_path
 
         json_object = json.dumps(data)
 
@@ -117,9 +120,9 @@ def publish_metadata(metadata_file_path):
     except Exception as ex:
         logging.error(f"Can't prepare metadata: {str(ex)}.")
 
-def put_files(image_file_name, image_path, metadata_file_name, metadata_path):
+def put_files(bucket_image_path, image_path, bucket_metadata_path, metadata_path):
     try:
-        logging.info(f"saving files to blobstorage image: '{image_path}' and image: '{metadata_path}'.")
+        logging.info(f"saving files to blobstorage image: '{bucket_image_path}' and image: '{bucket_metadata_path}'.")
 
         client = Minio(
             BLOB_STORAGE_URL,
@@ -133,11 +136,8 @@ def put_files(image_file_name, image_path, metadata_file_name, metadata_path):
             logging.info(f"Bucket '{BLOB_STORAGE_BUCKET}' not exists, creating new one.")
             client.make_bucket(BLOB_STORAGE_BUCKET)
 
-            bucket_image_path = f'{BLOB_STORAGE_PATH}/images/{image_file_name}'
-            bucket_metadata_path = f'{BLOB_STORAGE_PATH}/metadata/{metadata_file_name}'
-
-            client.fput_object(BLOB_STORAGE_BUCKET, bucket_image_path, image_path)
-            client.fput_object(BLOB_STORAGE_BUCKET, bucket_metadata_path, metadata_path)
+        client.fput_object(BLOB_STORAGE_BUCKET, bucket_image_path, image_path)
+        client.fput_object(BLOB_STORAGE_BUCKET, bucket_metadata_path, metadata_path)
     except Exception as ex:
         logging.error(f"Can't save files: {str(ex)}.")
 
@@ -154,12 +154,15 @@ def main():
         image_local_path = f'/tmp/{image_file_name}'
         metadata_local_path = f'/tmp/{metadata_file_name}'
 
+        bucket_image_path = f'{BLOB_STORAGE_PATH}/images/{image_file_name}'
+        bucket_metadata_path = f'{BLOB_STORAGE_PATH}/metadata/{metadata_file_name}'
+
         create_image(image_local_path)
-        create_metadata(metadata_local_path)
+        create_metadata(metadata_local_path, bucket_image_path, bucket_metadata_path)
 
         publish_metadata(metadata_local_path)
 
-        put_files(image_file_name, image_local_path, metadata_file_name, metadata_local_path)
+        put_files(bucket_image_path, image_local_path, bucket_metadata_path, metadata_local_path)
 
         sleep(SLEEP_TIME)
 
