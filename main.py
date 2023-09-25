@@ -34,6 +34,7 @@ BLOB_STORAGE_BUCKET = os.getenv("BLOB_STORAGE_BUCKET")
 BLOB_STORAGE_PATH = os.getenv("BLOB_STORAGE_PATH")
 
 MQTT_BROKER_URL = os.getenv("MQTT_BROKER_URL")
+MQTT_BROKER_PORT = os.getenv("MQTT_BROKER_PORT")
 MQTT_BROKER_USERNAME = os.getenv("MQTT_BROKER_USERNAME")
 MQTT_BROKER_PASSWORD = os.getenv("MQTT_BROKER_PASSWORD")
 MQTT_TOPIC = os.getenv("MQTT_TOPIC")
@@ -98,10 +99,8 @@ def publish_metadata(metadata_file_path):
 
         client = mqtt.Client()
 
-        if MQTT_BROKER_USERNAME and MQTT_BROKER_PASSWORD:
-            client.username_pw_set(MQTT_BROKER_USERNAME, MQTT_BROKER_PASSWORD)
-
-        client.connect(MQTT_BROKER_URL)
+        client.username_pw_set(MQTT_BROKER_USERNAME, MQTT_BROKER_PASSWORD)
+        client.connect(MQTT_BROKER_URL, MQTT_BROKER_PORT)
 
         json_data = json.dumps(metadata)
 
@@ -167,6 +166,7 @@ if __name__ == "__main__":
         logging.info(f"BLOB_STORAGE_BUCKET: {BLOB_STORAGE_BUCKET}")
         logging.info(f"BLOB_STORAGE_PATH: {BLOB_STORAGE_PATH}")
         logging.info(f"MQTT_BROKER_URL: {MQTT_BROKER_URL}")
+        logging.info(f"MQTT_BROKER_PORT: {MQTT_BROKER_PORT}")
         logging.info(f"MQTT_BROKER_USERNAME: {MQTT_BROKER_USERNAME}")
         logging.info(f"MQTT_BROKER_PASSWORD: {MQTT_BROKER_PASSWORD}")
         logging.info(f"MQTT_TOPIC: {MQTT_TOPIC}")

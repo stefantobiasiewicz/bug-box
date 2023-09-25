@@ -8,7 +8,8 @@ export BLOB_STORAGE_SECRET_KEY="Zj0KRckm4yR5IvKPWbCRY9QpfRAJzD6kGo2v7ts7"
 export BLOB_STORAGE_BUCKET="bug-box.v2"
 export BLOB_STORAGE_PATH="/box-1"
 
-export MQTT_BROKER_URL="tcp://192.168.31.112:1883"
+export MQTT_BROKER_URL="192.168.31.112"
+export MQTT_BROKER_PORT=1883
 export MQTT_BROKER_USERNAME="service"
 export MQTT_BROKER_PASSWORD="master"
 export MQTT_TOPIC="bug-box/box-1"
