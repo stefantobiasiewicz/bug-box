@@ -24,6 +24,8 @@ pixels = neopixel.NeoPixel(board.D18, 8)
 LED_PIN = 25
 SLEEP_TIME = 60
 
+BOX_NAME = os.getenv("BOX_NAME")
+
 BLOB_STORAGE_URL = os.getenv("BLOB_STORAGE_URL")
 BLOB_STORAGE_ACCESS_KEY = os.getenv("BLOB_STORAGE_ACCESS_KEY")
 BLOB_STORAGE_SECRET_KEY = os.getenv("BLOB_STORAGE_SECRET_KEY")
