@@ -2,10 +2,10 @@
 Description=Bug-box application
 
 [Service]
-User=pi
+User=root
 Type=simple
 ExecStart=/bin/bash /opt/bug-box/run.sh
-WorkingDirectory=/opt/bug-box
+WorkingDirectory=/
 
 Restart=always
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo 'installin bug-box application'
 
 echo "installing minio-py lib"
