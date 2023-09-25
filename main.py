@@ -100,7 +100,7 @@ def publish_metadata(metadata_file_path):
         client = mqtt.Client()
 
         client.username_pw_set(MQTT_BROKER_USERNAME, MQTT_BROKER_PASSWORD)
-        client.connect(MQTT_BROKER_URL, MQTT_BROKER_PORT)
+        client.connect(MQTT_BROKER_URL, int(MQTT_BROKER_PORT))
 
         json_data = json.dumps(metadata)
 
