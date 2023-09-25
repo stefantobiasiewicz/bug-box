@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import sys
 from time import sleep
 import datetime
 import os
@@ -18,6 +18,7 @@ import neopixel
 from picamera import PiCamera
 import adafruit_sht4x
 
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
 pixels = neopixel.NeoPixel(board.D18, 8)
 
