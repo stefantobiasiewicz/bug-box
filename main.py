@@ -154,6 +154,7 @@ def main():
 
         put_files(bucket_image_path, image_local_path, bucket_metadata_path, metadata_local_path)
 
+        delete_files(image_local_path, metadata_local_path)
         sleep(SLEEP_TIME)
 
 

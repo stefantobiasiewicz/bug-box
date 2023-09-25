@@ -5,9 +5,9 @@ Description=Bug-box application
 User=root
 Type=simple
 ExecStart=/bin/bash /opt/bug-box/run.sh
-WorkingDirectory=/
+WorkingDirectory=/opt/bug-box
 
-Restart=always
+Restart=none
 
 [Install]
 WantedBy=multi-user.target
