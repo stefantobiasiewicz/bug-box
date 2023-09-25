@@ -52,21 +52,10 @@ def create_image(image_file_path):
             pixels.fill((0, 0, 0))
 
         camera = PiCamera()
-
-        camera.iso = 800
-        # Wait for the automatic gain control to settle
-        sleep(2)
-        # Now fix the values
-        camera.shutter_speed = camera.exposure_speed
-        camera.exposure_mode = 'off'
-        g = camera.awb_gains
-        camera.awb_mode = 'off'
-        camera.awb_gains = g
-
         camera.start_preview()
         light_on()
 
-        sleep(1)
+        sleep(3)
         camera.capture(image_file_path)
         camera.stop_preview()
 
@@ -120,7 +109,7 @@ def publish_metadata(metadata_file_path):
 
         client.disconnect()
     except Exception as ex:
-        logging.error(f"Can't prepare metadata: {str(ex)}.")
+        logging.error(f"Can't publish metadata: {str(ex)}.")
 
 def put_files(bucket_image_path, image_path, bucket_metadata_path, metadata_path):
     try:
