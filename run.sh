@@ -5,5 +5,5 @@ echo "preparing enviroment variables"
 . ./set-env.sh
 
 echo "run"
-python3 test/env-test.py
+python3 main.py
 
