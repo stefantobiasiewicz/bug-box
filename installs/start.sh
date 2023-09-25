@@ -1,4 +1,4 @@
 #!/bin/bash
-echo "stopping apllication'"
+echo "starting apllication'"
 
 sudo systemctl start bug-box
