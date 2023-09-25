@@ -171,16 +171,16 @@ def main():
 
 if __name__ == "__main__":
     try:
-        logging.info("BOX_NAME:", BOX_NAME)
-        logging.info("BLOB_STORAGE_URL:", BLOB_STORAGE_URL)
-        logging.info("BLOB_STORAGE_ACCESS_KEY:", BLOB_STORAGE_ACCESS_KEY)
-        logging.info("BLOB_STORAGE_SECRET_KEY:", BLOB_STORAGE_SECRET_KEY)
-        logging.info("BLOB_STORAGE_BUCKET:", BLOB_STORAGE_BUCKET)
-        logging.info("BLOB_STORAGE_PATH:", BLOB_STORAGE_PATH)
-        logging.info("MQTT_BROKER_URL:", MQTT_BROKER_URL)
-        logging.info("MQTT_BROKER_USERNAME:", MQTT_BROKER_USERNAME)
-        logging.info("MQTT_BROKER_PASSWORD:", MQTT_BROKER_PASSWORD)
-        logging.info("MQTT_TOPIC:", MQTT_TOPIC)
+        logging.info(f"BOX_NAME: {BOX_NAME}")
+        logging.info(f"BLOB_STORAGE_URL: {BLOB_STORAGE_URL}")
+        logging.info(f"BLOB_STORAGE_ACCESS_KEY: {BLOB_STORAGE_ACCESS_KEY}")
+        logging.info(f"BLOB_STORAGE_SECRET_KEY: {BLOB_STORAGE_SECRET_KEY}")
+        logging.info(f"BLOB_STORAGE_BUCKET: {BLOB_STORAGE_BUCKET}")
+        logging.info(f"BLOB_STORAGE_PATH: {BLOB_STORAGE_PATH}")
+        logging.info(f"MQTT_BROKER_URL: {MQTT_BROKER_URL}")
+        logging.info(f"MQTT_BROKER_USERNAME: {MQTT_BROKER_USERNAME}")
+        logging.info(f"MQTT_BROKER_PASSWORD: {MQTT_BROKER_PASSWORD}")
+        logging.info(f"MQTT_TOPIC: {MQTT_TOPIC}")
 
         main()
     except S3Error as exc:
