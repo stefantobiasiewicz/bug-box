@@ -36,3 +36,16 @@ python3 sht-test.py
 echo "testing camera"
 python3 camera-test.py
 
+echo "instaling app to '/opt/bug-box'"
+
+cd ..
+chmod +x run.sh
+sudo cp -r $(pwd) /opt/bug-box
+sudo cp installs/bug-box.service /etc/systemd/system/bug-box.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable bug-box
+
+sudo systemctl start bug-box
+
+echo "installing done"
