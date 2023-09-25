@@ -21,8 +21,7 @@ import adafruit_sht4x
 
 pixels = neopixel.NeoPixel(board.D18, 8)
 
-LED_PIN = 25
-SLEEP_TIME = 60
+SLEEP_TIME = 10
 
 BOX_NAME = os.getenv("BOX_NAME")
 

@@ -19,6 +19,12 @@ sudo pip3 install rpi_ws281x adafruit-circuitpython-neopixel
 echo "installing: adafruit-circuitpython-sht4x"
 sudo pip3 install adafruit-circuitpython-sht4x
 
+echo "enabling raspberry pi board-hardware"
+echo "enable I2C"
+sudo raspi-config nonint do_i2c 0
+echo "enable camera"
+sudo raspi-config nonint do_camera 0
+
 echo "testing hardware - pls look for"
 
 cd ../test
@@ -29,3 +35,4 @@ echo "testing sht sensor"
 python3 sht-test.py
 echo "testing camera"
 python3 camera-test.py
+
