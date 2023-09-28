@@ -26,6 +26,8 @@ echo "enable I2C"
 sudo raspi-config nonint do_i2c 0
 echo "enable camera"
 sudo raspi-config nonint do_camera 0
+echo "enable legacy-camera"
+sudo raspi-config nonint do_legacy 0
 
 echo "testing hardware - pls look for"
 
