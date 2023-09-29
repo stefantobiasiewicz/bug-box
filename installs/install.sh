@@ -9,6 +9,9 @@ sudo python3 setup.py install
 cd ..
 sudo rm -rf minio-py
 
+echo "installing: apscheduler"
+pip3 install apscheduler
+
 echo "installing: paho-mqtt"
 pip3 install paho-mqtt
 

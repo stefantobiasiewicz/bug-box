@@ -1,0 +1,48 @@
+
+
+
+
+sudo apt install git
+
+git clone https://github.com/minio/minio-py
+cd minio-py
+sudo python setup.py install
+
+pip install picamera
+sudo pip3 install rpi_ws281x adafruit-circuitpython-neopixel
+sudo pip3 install adafruit-circuitpython-sht4x
+
+
+reload services: `sudo systemctl daemon-reload`
+run przy starupie: `sudo systemctl enable bug-box`
+start: `sudo systemctl start bug-box`
+logi:  `sudo journalctl -u bug-box`
+
+
+metadata file should look
+
+metadata: {
+    "version": "v1",
+    "name": "BOX-1",
+    "env-data": {
+        "temp": 28.11,
+        "hum": 50.12
+    }
+    "iamges": {
+        "image-n": "path/n",
+        "image-r": "path/r",
+        "image-g": "path/g",
+        "image-b": "path/b",
+    }
+}
+
+todo
+change hostname on start:
+sudo nano /etc/hostname
+sudo reboot
+
+cron setup: https://crontab.guru/#*/2_*_*_*_*
+
+AI / ML
+https://www.datagym.ai/
+https://github.com/datagym-ai/datagym-core
