@@ -49,7 +49,7 @@ def create_image(files):
 
         def light_on(r, g, b):
             logging.info('Light on.')
-            pixels.fill(r, g, b)
+            pixels.fill((r, g, b))
 
         def light_off():
             logging.info('Light off.')
