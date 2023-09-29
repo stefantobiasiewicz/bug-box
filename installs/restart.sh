@@ -1,4 +1,4 @@
 #!/bin/bash
-echo "stopping apllication'"
+echo "restarting apllication'"
 
 sudo systemctl restart bug-box
