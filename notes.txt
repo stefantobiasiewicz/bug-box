@@ -16,6 +16,7 @@ sudo pip3 install adafruit-circuitpython-sht4x
 reload services: `sudo systemctl daemon-reload`
 run przy starupie: `sudo systemctl enable bug-box`
 start: `sudo systemctl start bug-box`
+start: `sudo systemctl status bug-box`
 logi:  `sudo journalctl -u bug-box`
 
 
