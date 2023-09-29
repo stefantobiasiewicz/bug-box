@@ -59,19 +59,19 @@ def create_image(files):
         camera.start_preview()
         light_on(255, 255, 255)
         sleep(3)
-        camera.capture(files["image"].index(1))
+        camera.capture(files["image"][1])
 
         light_on(255, 0, 0)
         sleep(1)
-        camera.capture(files["image-r"].index(1))
+        camera.capture(files["image-r"][1])
 
         light_on(0, 255, 0)
         sleep(1)
-        camera.capture(files["image-g"].index(1))
+        camera.capture(files["image-g"][1])
 
         light_on(0, 0, 255)
         sleep(1)
-        camera.capture(files["image-b"].index(1))
+        camera.capture(files["image-b"][1])
 
         camera.stop_preview()
 
@@ -98,10 +98,10 @@ def create_metadata(files):
             "name": BOX_NAME,
             "env-data": get_env_data(),
             "images": {
-                "image": files["image"].index(2),
-                "image-r": files["image-r"].index(2),
-                "image-g": files["image-g"].index(2),
-                "image-b": files["image-b"].index(2)
+                "image": files["image"][2],
+                "image-r": files["image-r"][2],
+                "image-g": files["image-g"][2],
+                "image-b": files["image-b"][2]
             },
             "image-cron": IMAGE_CRON,
             "env-cron": ENV_CRON,
@@ -111,7 +111,7 @@ def create_metadata(files):
         json_object = json.dumps(metadata)
 
         # Writing to sample.json
-        with open(files["metadata"].index(1), "w") as outfile:
+        with open(files["metadata"][1], "w") as outfile:
             outfile.write(json_object)
     except Exception as ex:
         logging.error(f"Can't prepare metadata: {str(ex)}.")
@@ -121,7 +121,7 @@ def publish_metadata(files):
     try:
         logging.info(f"publishing metadata: '{files}' to MQTT.")
 
-        with open(files["metadata"].index(1), "r") as file:
+        with open(files["metadata"][1], "r") as file:
             metadata = json.load(file)
 
         client = mqtt.Client()
@@ -154,21 +154,21 @@ def put_files(files):
             logging.info(f"Bucket '{BLOB_STORAGE_BUCKET}' not exists, creating new one.")
             client.make_bucket(BLOB_STORAGE_BUCKET)
 
-        client.fput_object(BLOB_STORAGE_BUCKET, files["metadata"].index(2), files["metadata"].index(1))
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image"].index(2), files["image"].index(1))
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image-r"].index(2), files["image-r"].index(1))
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image-g"].index(2), files["image-g"].index(1))
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image-b"].index(2), files["image-b"].index(1))
+        client.fput_object(BLOB_STORAGE_BUCKET, files["metadata"][2], files["metadata"][1])
+        client.fput_object(BLOB_STORAGE_BUCKET, files["image"][2], files["image"][1])
+        client.fput_object(BLOB_STORAGE_BUCKET, files["image-r"][2], files["image-r"][1])
+        client.fput_object(BLOB_STORAGE_BUCKET, files["image-g"][2], files["image-g"][1])
+        client.fput_object(BLOB_STORAGE_BUCKET, files["image-b"][2], files["image-b"][1])
     except Exception as ex:
         logging.error(f"Can't save files: {str(ex)}.")
 
 
 def delete_files(files):
-    os.remove(files["metadata"].index(1))
-    os.remove(files["image"].index(1))
-    os.remove(files["image-r"].index(1))
-    os.remove(files["image-g"].index(1))
-    os.remove(files["image-b"].index(1))
+    os.remove(files["metadata"][1])
+    os.remove(files["image"][1])
+    os.remove(files["image-r"][1])
+    os.remove(files["image-g"][1])
+    os.remove(files["image-b"][1])
 
 
 def image_job():
