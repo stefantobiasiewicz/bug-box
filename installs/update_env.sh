@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # Configuration file path
-config_file="/opt/bug-box/set-env.sh"
+config_file="config.sh"
 
 # Function to read and set a variable
 set_variable() {
+    current_value=$(grep "^export $1=" "$config_file" | cut -d'"' -f2)
+    echo "Current value of $1 is: $current_value"
     echo -n "Enter a new value for $1: "
     read new_value
     # Set the variable in the configuration file
