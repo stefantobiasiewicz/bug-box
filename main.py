@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
+import datetime
+import json
+import logging
+import os
 import sys
 from time import sleep
-import datetime
-import os
-import logging
-import json
 
-# clients
-from minio import Minio
-from minio.error import S3Error
+import adafruit_sht4x
+# RPI hardware stuff
+import board
+import neopixel
 import paho.mqtt.client as mqtt
-
 # scheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
-
-
-# RPI hardware suff
-import board
-import neopixel
+# clients
+from minio import Minio
+from minio.error import S3Error
 from picamera import PiCamera
-import adafruit_sht4x
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
@@ -30,7 +27,6 @@ BOX_NAME = os.getenv("BOX_NAME")
 LED_PIXEL_COUNT = os.getenv("LED_PIXEL_COUNT", 8)
 IMAGE_CRON = os.getenv("IMAGE_CORN", "*/2 * * * *")
 ENV_CRON = os.getenv("ENV_CRON", "*/1 * * * *")
-
 
 BLOB_STORAGE_URL = os.getenv("BLOB_STORAGE_URL")
 BLOB_STORAGE_ACCESS_KEY = os.getenv("BLOB_STORAGE_ACCESS_KEY")
@@ -45,6 +41,7 @@ MQTT_BROKER_PASSWORD = os.getenv("MQTT_BROKER_PASSWORD")
 MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
 pixels = neopixel.NeoPixel(board.D18, LED_PIXEL_COUNT)
+
 
 def create_image(files):
     try:
@@ -90,7 +87,7 @@ def get_env_data():
 
     logging.info("Temperature: %.2f / humidity: %.2f." % (sht.temperature, sht.relative_humidity))
 
-    return { "temp" : sht.temperature, "hum": sht.relative_humidity}
+    return {"temp": sht.temperature, "hum": sht.relative_humidity}
 
 
 def create_metadata(files):
@@ -101,14 +98,14 @@ def create_metadata(files):
             "name": BOX_NAME,
             "env-data": get_env_data(),
             "images": {
-                "image" : files["image"].index(2),
-                "image-r" : files["image-r"].index(2),
-                "image-g" : files["image-g"].index(2),
-                "image-b" : files["image-b"].index(2)
+                "image": files["image"].index(2),
+                "image-r": files["image-r"].index(2),
+                "image-g": files["image-g"].index(2),
+                "image-b": files["image-b"].index(2)
             },
-            "image-cron" : IMAGE_CRON,
-            "env-cron" : ENV_CRON,
-            "led-count" : LED_PIXEL_COUNT
+            "image-cron": IMAGE_CRON,
+            "env-cron": ENV_CRON,
+            "led-count": LED_PIXEL_COUNT
         }
 
         json_object = json.dumps(metadata)
@@ -143,7 +140,7 @@ def publish_metadata(files):
 
 def put_files(files):
     try:
-        logging.info(f"saving files to blobstorage {files}.")
+        logging.info(f"saving files to blob storage {files}.")
 
         client = Minio(
             BLOB_STORAGE_URL,
@@ -158,7 +155,7 @@ def put_files(files):
             client.make_bucket(BLOB_STORAGE_BUCKET)
 
         client.fput_object(BLOB_STORAGE_BUCKET, files["metadata"].index(2), files["metadata"].index(1))
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image"].index(2),    files["image"].index(1))
+        client.fput_object(BLOB_STORAGE_BUCKET, files["image"].index(2), files["image"].index(1))
         client.fput_object(BLOB_STORAGE_BUCKET, files["image-r"].index(2), files["image-r"].index(1))
         client.fput_object(BLOB_STORAGE_BUCKET, files["image-g"].index(2), files["image-g"].index(1))
         client.fput_object(BLOB_STORAGE_BUCKET, files["image-b"].index(2), files["image-b"].index(1))
