@@ -7,7 +7,7 @@ Type=simple
 ExecStart=/bin/bash /opt/bug-box/run.sh
 WorkingDirectory=/opt/bug-box
 
-Restart=none
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
