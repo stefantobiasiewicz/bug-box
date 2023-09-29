@@ -21,8 +21,6 @@ from picamera import PiCamera
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
-SLEEP_TIME = 10
-
 BOX_NAME = os.getenv("BOX_NAME")
 LED_PIXEL_COUNT = os.getenv("LED_PIXEL_COUNT", 8)
 IMAGE_CRON = os.getenv("IMAGE_CORN", "*/2 * * * *")
@@ -218,7 +216,14 @@ def main():
     scheduler = BlockingScheduler()
 
     scheduler.add_job(image_job, CronTrigger.from_crontab(IMAGE_CRON))
-    scheduler.add_job(env_job, CronTrigger.from_crontab(ENV_CRON))
+
+    try:
+        get_env_data()
+        scheduler.add_job(env_job, CronTrigger.from_crontab(ENV_CRON))
+    except Exception as e:
+        logging.error(
+            f"exception during getting env data - env sensor may be not connected to system! environment procces "
+            f"disable. '{e}'")
 
     try:
         scheduler.start()
