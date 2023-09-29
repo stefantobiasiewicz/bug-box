@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration file path
-config_file="/opt/bug-box/set-env.sh "
+config_file="/opt/bug-box/set-env.sh"
 q
 # Function to read and set a variable
 set_variable() {
