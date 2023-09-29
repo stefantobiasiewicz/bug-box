@@ -4,7 +4,7 @@ Description=Bug-box logshipping application
 [Service]
 User=root
 Type=simple
-ExecStart=/bin/bash /opt/bug-box/run-logs.sh
+ExecStart=/bin/bash /opt/bug-box/run-log-shipping.sh
 WorkingDirectory=/opt/bug-box
 
 Restart=always
