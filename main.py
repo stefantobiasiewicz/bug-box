@@ -96,7 +96,7 @@ def create_metadata(files):
         try:
             env_data = get_env_data()
         except Exception as e:
-            logging.warning(f"env sensor not work - env data null. '{e}'")
+            logging.info(f"env sensor not work - env data null. '{e}'")
 
         metadata = {
             "name": BOX_NAME,
