@@ -20,6 +20,13 @@ start: `sudo systemctl status bug-box`
 logi:  `sudo journalctl -u bug-box`
 
 
+sudo journalctl -fu bug-box
+
+sudo journalctl -u bug-box --vacuum-size=50M
+sudo journalctl --flush -u bug-box
+/etc/systemd/system/multi-user.target.wants/bug-box.service → /etc/systemd/system/bug-box.service.
+
+
 metadata file should look
 
 metadata: {
