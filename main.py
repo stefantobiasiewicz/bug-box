@@ -92,9 +92,15 @@ def create_metadata(files):
     try:
         logging.info(f"creating metadata for files '{files}'.")
 
+        env_data = None
+        try:
+            env_data = get_env_data()
+        except Exception as e:
+            logging.warning(f"env sensor not work - env data null. '{e}'")
+
         metadata = {
             "name": BOX_NAME,
-            "env-data": get_env_data(),
+            "env-data": env_data,
             "images": {
                 "image": files["image"][2],
                 "image-r": files["image-r"][2],
