@@ -40,7 +40,7 @@ MQTT_BROKER_USERNAME = os.getenv("MQTT_BROKER_USERNAME")
 MQTT_BROKER_PASSWORD = os.getenv("MQTT_BROKER_PASSWORD")
 MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
-pixels = neopixel.NeoPixel(board.D18, LED_PIXEL_COUNT)
+pixels = neopixel.NeoPixel(board.D18, int(LED_PIXEL_COUNT))
 
 
 def create_image(files):
