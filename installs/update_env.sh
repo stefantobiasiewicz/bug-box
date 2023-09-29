@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Configuration file path
-config_file="config.sh"
-
+config_file="/opt/bug-box/set-env.sh "
+q
 # Function to read and set a variable
 set_variable() {
     current_value=$(grep "^export $1=" "$config_file" | cut -d'"' -f2)
