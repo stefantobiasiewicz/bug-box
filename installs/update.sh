@@ -17,7 +17,6 @@ echo "after update check new env data and fill necessary fields after update"
 
 sudo systemctl daemon-reload
 sudo systemctl enable bug-box
-
 sudo systemctl start bug-box
 
 echo "updating done"

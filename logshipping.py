@@ -1,13 +1,16 @@
+import os
 import subprocess
 import paho.mqtt.client as mqtt
 import time
 
 # Konfiguracja MQTT
-MQTT_BROKER_URL = "192.168.31.112"
-MQTT_BROKER_PORT = 1883
-mqtt_topic = "bug-box-logs"
-MQTT_BROKER_USERNAME = "service"
-MQTT_BROKER_PASSWORD = "master"
+BOX_NAME = os.getenv("BOX_NAME")
+
+MQTT_BROKER_URL = os.getenv("MQTT_BROKER_URL")
+MQTT_BROKER_PORT = os.getenv("MQTT_BROKER_PORT")
+MQTT_BROKER_USERNAME = os.getenv("MQTT_BROKER_USERNAME")
+MQTT_BROKER_PASSWORD = os.getenv("MQTT_BROKER_PASSWORD")
+MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
 # Funkcja do publikowania logów
 def publish_logs():
@@ -29,7 +32,7 @@ def publish_logs():
     while True:
         line = process.stdout.readline()
         if line:
-            mqtt_client.publish(mqtt_topic, line.strip(), retain=True)
+            mqtt_client.publish(f'{MQTT_TOPIC}/{BOX_NAME}/logs', line.strip(), retain=True)
         else:
             time.sleep(1)
 
