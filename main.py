@@ -197,9 +197,15 @@ def image_job():
 def env_job():
     logging.info(f"taking env data and publishing to MQTT.")
 
+    env_data = None
+    try:
+        env_data = get_env_data()
+    except Exception as e:
+        logging.warning(f"env sensor not work - env data null. '{e}'")
+
     metadata = {
         "name": BOX_NAME,
-        "env-data": get_env_data()
+        "env-data": env_data
     }
 
     client = mqtt.Client()
