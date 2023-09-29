@@ -51,4 +51,5 @@ while true; do
         *) echo "Invalid option";;
     esac
     read -p "Press Enter to continue..."
+    read -p "Press Enter to continue..."
 done
