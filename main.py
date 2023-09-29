@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
 BOX_NAME = os.getenv("BOX_NAME")
 LED_PIXEL_COUNT = os.getenv("LED_PIXEL_COUNT", 8)
-IMAGE_CRON = os.getenv("IMAGE_CORN", "*/2 * * * *")
+IMAGE_CRON = os.getenv("IMAGE_CORN", "*/7 * * * *")
 ENV_CRON = os.getenv("ENV_CRON", "*/1 * * * *")
 
 BLOB_STORAGE_URL = os.getenv("BLOB_STORAGE_URL")
