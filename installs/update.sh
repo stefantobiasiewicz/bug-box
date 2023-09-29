@@ -8,6 +8,7 @@ cp /opt/bug-box/set-env.sh /tmp/set-env.sh
 
 cd ..
 chmod +x run.sh
+chmod +x run-logshipping.sh
 sudo cp -r $(pwd) /opt/bug-box
 sudo cp installs/bug-box.service /etc/systemd/system/bug-box.service
 
