@@ -5,7 +5,7 @@ echo "updating bug-box-logs apllication'"
 . ./uninstall.sh
 
 cd ../..
-sudo cp installs/bug-box-logs.service /etc/systemd/system/bug-box-logs.service
+sudo cp installs/logs/bug-box-logs.service /etc/systemd/system/bug-box-logs.service
 
 sudo systemctl daemon-reload
 
