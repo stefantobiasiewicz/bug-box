@@ -26,6 +26,11 @@ LED_PIXEL_COUNT = os.getenv("LED_PIXEL_COUNT", 8)
 IMAGE_CRON = os.getenv("IMAGE_CRON", "*/7 * * * *")
 ENV_CRON = os.getenv("ENV_CRON", "*/1 * * * *")
 
+COLOR_W = os.getenv("COLOR_W", "255, 255, 255")
+COLOR_R = os.getenv("COLOR_R", "255, 0, 0")
+COLOR_G = os.getenv("COLOR_G", "0, 255, 0")
+COLOR_B = os.getenv("COLOR_B", "0, 0, 255")
+
 BLOB_STORAGE_URL = os.getenv("BLOB_STORAGE_URL")
 BLOB_STORAGE_ACCESS_KEY = os.getenv("BLOB_STORAGE_ACCESS_KEY")
 BLOB_STORAGE_SECRET_KEY = os.getenv("BLOB_STORAGE_SECRET_KEY")
@@ -45,8 +50,9 @@ def create_image(files):
     try:
         logging.info(f"creating images for file's '{files}'.")
 
-        def light_on(r, g, b):
+        def light_on(rgb_string):
             logging.info('Light on.')
+            r, g, b = map(int, rgb_string.split(','))
             pixels.fill((r, g, b))
 
         def light_off():
@@ -55,19 +61,19 @@ def create_image(files):
 
         camera = PiCamera()
         camera.start_preview()
-        light_on(255, 255, 255)
+        light_on(COLOR_W)
         sleep(3)
         camera.capture(files["image"][1])
 
-        light_on(255, 0, 0)
+        light_on(COLOR_R)
         sleep(1)
         camera.capture(files["image-r"][1])
 
-        light_on(0, 255, 0)
+        light_on(COLOR_G)
         sleep(1)
         camera.capture(files["image-g"][1])
 
-        light_on(0, 0, 255)
+        light_on(COLOR_B)
         sleep(1)
         camera.capture(files["image-b"][1])
 
@@ -250,6 +256,11 @@ if __name__ == "__main__":
         logging.info(f"LED_PIXEL_COUNT: {LED_PIXEL_COUNT}")
         logging.info(f"IMAGE_CRON: {IMAGE_CRON}")
         logging.info(f"ENV_CRON: {ENV_CRON}")
+        logging.info(f"******************************")
+        logging.info(f"COLOR_W: {COLOR_W}")
+        logging.info(f"COLOR_R: {COLOR_R}")
+        logging.info(f"COLOR_G: {COLOR_G}")
+        logging.info(f"COLOR_B: {COLOR_B}")
         logging.info(f"******************************")
         logging.info(f"BLOB_STORAGE_URL: {BLOB_STORAGE_URL}")
         logging.info(f"BLOB_STORAGE_ACCESS_KEY: {BLOB_STORAGE_ACCESS_KEY}")
