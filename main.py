@@ -183,10 +183,10 @@ def image_job():
     metadata_file_name = f"metadata-{now}.json"
 
     files = {
-        'image': (image_file_name, f'/tmp/{image_file_name}', f'{BOX_NAME}/images/{image_file_name}')
-        'image-r': (image_r_file_name, f'/tmp/{image_r_file_name}', f'{BOX_NAME}/images/color/{image_r_file_name}')
-        'image-g': (image_g_file_name, f'/tmp/{image_g_file_name}', f'{BOX_NAME}/images/color/{image_g_file_name}')
-        'image-b': (image_b_file_name, f'/tmp/{image_b_file_name}', f'{BOX_NAME}/images/color/{image_b_file_name}')
+        'image': (image_file_name, f'/tmp/{image_file_name}', f'{BOX_NAME}/images/{image_file_name}'),
+        'image-r': (image_r_file_name, f'/tmp/{image_r_file_name}', f'{BOX_NAME}/images/color/{image_r_file_name}'),
+        'image-g': (image_g_file_name, f'/tmp/{image_g_file_name}', f'{BOX_NAME}/images/color/{image_g_file_name}'),
+        'image-b': (image_b_file_name, f'/tmp/{image_b_file_name}', f'{BOX_NAME}/images/color/{image_b_file_name}'),
         'metadata': (metadata_file_name, f'/tmp/{metadata_file_name}', f'{BOX_NAME}/metadata/{metadata_file_name}')
     }
 
