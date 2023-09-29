@@ -2,8 +2,8 @@
 
 export BOX_NAME="box-1"
 export LED_PIXEL_COUNT=8
-export IMAGE_CRON="*/2 * * * *-1"
-export ENV_CRON="*/1 * * * *-1"
+export IMAGE_CRON="*/2 * * * *"
+export ENV_CRON="*/1 * * * *"
 
 export BLOB_STORAGE_URL="192.168.31.111:9000"
 export BLOB_STORAGE_ACCESS_KEY="EWl5gjA3EteIp9cf8s77"
