@@ -8,7 +8,7 @@ cp /opt/bug-box/set-env.sh /tmp/set-env.sh
 
 cd ..
 chmod +x run.sh
-chmod +x run-logshipping.sh
+chmod +x run-log-shipping.sh
 sudo cp -r $(pwd) /opt/bug-box
 
 cp /opt/bug-box/set-env.sh /opt/bug-box/set-env-new.sh

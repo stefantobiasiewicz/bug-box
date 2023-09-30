@@ -47,7 +47,7 @@ echo "instaling app to '/opt/bug-box'"
 
 cd ..
 chmod +x run.sh
-chmod +x run-logshipping.sh
+chmod +x run-log-shipping.sh
 sudo cp -r $(pwd) /opt/bug-box
 sudo cp installs/bug-box.service /etc/systemd/system/bug-box.service
 
