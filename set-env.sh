@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export BOX_NAME="box-1"
+export BOX_NAME="box-test"
 export LED_PIXEL_COUNT="8"
 export IMAGE_CRON="*/1 * * * *"
 export ENV_CRON="*/1 * * * *"

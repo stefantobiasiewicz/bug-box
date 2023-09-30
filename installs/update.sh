@@ -10,13 +10,13 @@ cd ..
 chmod +x run.sh
 chmod +x run-logshipping.sh
 sudo cp -r $(pwd) /opt/bug-box
-sudo cp installs/bug-box.service /etc/systemd/system/bug-box.service
-
 
 cp /opt/bug-box/set-env.sh /opt/bug-box/set-env-new.sh
 cp /tmp/set-env.sh /opt/bug-box/set-env.sh
 echo "new env stored with default variables jere: '/opt/bug-box/set-env-new.sh'"
 echo "pls check if your configuration contain all needed variables"
+
+sudo cp installs/bug-box.service /etc/systemd/system/bug-box.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable bug-box
