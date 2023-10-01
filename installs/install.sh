@@ -10,10 +10,10 @@ cd ..
 sudo rm -rf minio-py
 
 echo "installing: apscheduler"
-pip3 install apscheduler
+sudo pip3 install apscheduler
 
 echo "installing: paho-mqtt"
-pip3 install paho-mqtt
+sudo pip3 install paho-mqtt
 
 echo "installing: picamera"
 sudo pip3 install picamera
