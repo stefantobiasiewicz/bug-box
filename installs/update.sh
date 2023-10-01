@@ -11,8 +11,9 @@ chmod +x run.sh
 chmod +x run-log-shipping.sh
 sudo cp -r $(pwd) /opt/bug-box
 
-cp /opt/bug-box/set-env.sh /opt/bug-box/set-env-new.sh
-cp /tmp/set-env.sh /opt/bug-box/set-env.sh
+sudo mv /opt/bug-box/set-env.sh /opt/bug-box/set-env-new.sh
+
+sudo cp /tmp/set-env.sh /opt/bug-box/set-env.sh
 echo "new env stored with default variables jere: '/opt/bug-box/set-env-new.sh'"
 echo "pls check if your configuration contain all needed variables"
 

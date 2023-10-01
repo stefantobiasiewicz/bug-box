@@ -282,6 +282,8 @@ def main():
             f"exception during getting env data - env sensor may be not connected to system! environment procces "
             f"disable. '{e}'")
 
+    start_info()
+
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
