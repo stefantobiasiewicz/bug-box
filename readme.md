@@ -3,7 +3,7 @@
 To run app on RPI zero:
 
 ```commandline
-gti clone https://github.com/stefantobiasiewicz/bug-box.git
+git clone https://github.com/stefantobiasiewicz/bug-box.git
 cd bug-box/installs
 sudo sh install.sh
 ```

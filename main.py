@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import sys
+import socket
 from time import sleep
 
 import adafruit_sht4x
@@ -104,6 +105,9 @@ def create_metadata(files):
         except Exception as e:
             logging.info(f"env sensor not work - env data null. '{e}'")
 
+        hostname = socket.gethostname()
+        IPAddr = socket.gethostbyname(hostname)
+
         metadata = {
             "name": BOX_NAME,
             "env-data": env_data,
@@ -112,6 +116,10 @@ def create_metadata(files):
                 "image-r": files["image-r"][2],
                 "image-g": files["image-g"][2],
                 "image-b": files["image-b"][2]
+            },
+            "device": {
+                "host": hostname,
+                "ip-address": IPAddr
             },
             "image-cron": IMAGE_CRON,
             "env-cron": ENV_CRON,
@@ -215,9 +223,16 @@ def env_job():
     except Exception as e:
         logging.warning(f"env sensor not work - env data null. '{e}'")
 
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+
     metadata = {
         "name": BOX_NAME,
-        "env-data": env_data
+        "env-data": env_data,
+        "device": {
+            "host": hostname,
+            "ip-address": IPAddr
+        }
     }
 
     client = mqtt.Client()
@@ -226,6 +241,30 @@ def env_job():
 
     json_data = json.dumps(metadata)
     client.publish(f"{MQTT_TOPIC}/{BOX_NAME}/env", json_data, retain=True)
+
+    client.disconnect()
+
+
+def start_info():
+    logging.info(f"publishing to MQTT startup info.")
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+
+    data = {
+        "name": BOX_NAME,
+        "startup": datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S"),
+        "device": {
+            "host": hostname,
+            "ip-address": IPAddr
+        }
+    }
+
+    client = mqtt.Client()
+    client.username_pw_set(MQTT_BROKER_USERNAME, MQTT_BROKER_PASSWORD)
+    client.connect(MQTT_BROKER_URL, int(MQTT_BROKER_PORT))
+
+    json_data = json.dumps(data)
+    client.publish(f"{MQTT_TOPIC}/{BOX_NAME}/info", json_data, retain=True)
 
     client.disconnect()
 
