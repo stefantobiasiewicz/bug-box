@@ -107,9 +107,6 @@ def create_metadata(files):
         except Exception as e:
             logging.info(f"env sensor not work - env data null. '{e}'")
 
-        hostname = socket.gethostname()
-        IPAddr = socket.gethostbyname(hostname)
-
         metadata = {
             "name": BOX_NAME,
             "env-data": env_data,
@@ -120,8 +117,8 @@ def create_metadata(files):
                 "image-b": files["image-b"][2]
             },
             "device": {
-                "host": hostname,
-                "ip-address": IPAddr
+                "host": socket.gethostname(),
+                "ip-address": get_ip()
             },
             "image-cron": IMAGE_CRON,
             "env-cron": ENV_CRON,
@@ -248,9 +245,9 @@ def start_info():
     logging.info(f"publishing to MQTT startup info.")
 
     data = {
-        "name": BOX_NAME,
         "startup": datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S"),
         "device": {
+            "name": BOX_NAME,
             "host": socket.gethostname(),
             "ip-address": get_ip()
         }
