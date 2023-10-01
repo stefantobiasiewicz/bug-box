@@ -46,6 +46,8 @@ MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
 pixels = neopixel.NeoPixel(board.D18, int(LED_PIXEL_COUNT))
 
+def get_ip():
+    return [(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]
 
 def create_image(files):
     try:
@@ -223,15 +225,12 @@ def env_job():
     except Exception as e:
         logging.warning(f"env sensor not work - env data null. '{e}'")
 
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
-
     metadata = {
         "name": BOX_NAME,
         "env-data": env_data,
         "device": {
-            "host": hostname,
-            "ip-address": IPAddr
+            "host": socket.gethostname(),
+            "ip-address": get_ip()
         }
     }
 
@@ -247,15 +246,13 @@ def env_job():
 
 def start_info():
     logging.info(f"publishing to MQTT startup info.")
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
 
     data = {
         "name": BOX_NAME,
         "startup": datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S"),
         "device": {
-            "host": hostname,
-            "ip-address": IPAddr
+            "host": socket.gethostname(),
+            "ip-address": get_ip()
         }
     }
 
