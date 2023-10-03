@@ -13,3 +13,8 @@ for lgoshipping to mqtt:
 cd logs
 sudo sh update.sh
 ```
+
+main concurent XD :
+https://www.kickstarter.com/projects/1468268424/hive-explorer-world-s-first-stem-insect-educationa/posts
+
+https://www.livinfarms.com/insect-services/

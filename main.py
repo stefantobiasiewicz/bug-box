@@ -46,10 +46,10 @@ MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
 pixels = neopixel.NeoPixel(board.D18, int(LED_PIXEL_COUNT))
 
-def get_ip():
+def __get_ip():
     return [(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]
 
-def create_image(files):
+def __create_image_files(files):
     try:
         logging.info(f"creating images for file's '{files}'.")
 
@@ -88,7 +88,7 @@ def create_image(files):
         logging.error(f"Can't prepare metadata: {str(ex)}.")
 
 
-def get_env_data():
+def __get_env_data():
     logging.info('Getting box environment data.')
     sht = adafruit_sht4x.SHT4x(board.I2C())
 
@@ -97,13 +97,13 @@ def get_env_data():
     return {"temp": sht.temperature, "hum": sht.relative_humidity}
 
 
-def create_metadata(files):
+def __create_metadata_file(files):
     try:
         logging.info(f"creating metadata for files '{files}'.")
 
         env_data = None
         try:
-            env_data = get_env_data()
+            env_data = __get_env_data()
         except Exception as e:
             logging.info(f"env sensor not work - env data null. '{e}'")
 
@@ -118,7 +118,7 @@ def create_metadata(files):
             },
             "device": {
                 "host": socket.gethostname(),
-                "ip-address": get_ip()
+                "ip-address": __get_ip()
             },
             "image-cron": IMAGE_CRON,
             "env-cron": ENV_CRON,
@@ -134,7 +134,7 @@ def create_metadata(files):
         logging.error(f"Can't prepare metadata: {str(ex)}.")
 
 
-def publish_metadata(files):
+def __publish_metadata_to_mqtt(files):
     try:
         logging.info(f"publishing metadata: '{files}' to MQTT.")
 
@@ -155,7 +155,7 @@ def publish_metadata(files):
         logging.error(f"Can't publish metadata: {str(ex)}.")
 
 
-def put_files(files):
+def __put_files_to_minio_blob_storage(files):
     try:
         logging.info(f"saving files to blob storage {files}.")
 
@@ -180,7 +180,7 @@ def put_files(files):
         logging.error(f"Can't save files: {str(ex)}.")
 
 
-def delete_files(files):
+def __delete_files(files):
     os.remove(files["metadata"][1])
     os.remove(files["image"][1])
     os.remove(files["image-r"][1])
@@ -204,13 +204,13 @@ def image_job():
         'metadata': (metadata_file_name, f'/tmp/{metadata_file_name}', f'{BOX_NAME}/metadata/{metadata_file_name}')
     }
 
-    create_image(files)
-    create_metadata(files)
-    publish_metadata(files)
+    __create_image_files(files)
+    __create_metadata_file(files)
+    __publish_metadata_to_mqtt(files)
 
-    put_files(files)
+    __put_files_to_minio_blob_storage(files)
 
-    delete_files(files)
+    __delete_files(files)
 
 
 def env_job():
@@ -218,7 +218,7 @@ def env_job():
 
     env_data = None
     try:
-        env_data = get_env_data()
+        env_data = __get_env_data()
     except Exception as e:
         logging.warning(f"env sensor not work - env data null. '{e}'")
 
@@ -227,7 +227,7 @@ def env_job():
         "env-data": env_data,
         "device": {
             "host": socket.gethostname(),
-            "ip-address": get_ip()
+            "ip-address": __get_ip()
         }
     }
 
@@ -249,7 +249,7 @@ def start_info():
         "device": {
             "name": BOX_NAME,
             "host": socket.gethostname(),
-            "ip-address": get_ip()
+            "ip-address": __get_ip()
         }
     }
 
@@ -269,7 +269,7 @@ def main():
     scheduler.add_job(image_job, CronTrigger.from_crontab(IMAGE_CRON))
 
     try:
-        get_env_data()
+        __get_env_data()
         scheduler.add_job(env_job, CronTrigger.from_crontab(ENV_CRON))
     except Exception as e:
         logging.error(
@@ -283,31 +283,40 @@ def main():
     except (KeyboardInterrupt, SystemExit):
         pass
 
+def __check_variable(var, str):
+    logging.info(f"str: {var}")
+    if var is None:
+        message = f"environment variable {str} is not set!"
+        logging.error(message)
+        raise Exception(message)
+
+def __validate_env_var():
+    logging.info(f"******************************")
+    __check_variable(BOX_NAME, 'BOX_NAME')
+    __check_variable(LED_PIXEL_COUNT, 'LED_PIXEL_COUNT')
+    __check_variable(IMAGE_CRON, 'IMAGE_CRON')
+    __check_variable(ENV_CRON, 'ENV_CRON')
+    logging.info(f"******************************")
+    __check_variable(COLOR_W, 'COLOR_W')
+    __check_variable(COLOR_R, 'COLOR_R')
+    __check_variable(COLOR_G, 'COLOR_G')
+    __check_variable(COLOR_B, 'COLOR_B')
+    logging.info(f"******************************")
+    __check_variable(BLOB_STORAGE_URL, 'BLOB_STORAGE_URL')
+    __check_variable(BLOB_STORAGE_ACCESS_KEY, 'BLOB_STORAGE_ACCESS_KEY')
+    __check_variable(BLOB_STORAGE_SECRET_KEY, 'BLOB_STORAGE_SECRET_KEY')
+    __check_variable(BLOB_STORAGE_BUCKET, 'BLOB_STORAGE_BUCKET')
+    logging.info(f"******************************")
+    __check_variable(MQTT_BROKER_URL, 'MQTT_BROKER_URL')
+    __check_variable(MQTT_BROKER_PORT, 'MQTT_BROKER_PORT')
+    __check_variable(MQTT_BROKER_USERNAME, 'MQTT_BROKER_USERNAME')
+    __check_variable(MQTT_BROKER_PASSWORD, 'MQTT_BROKER_PASSWORD')
+    __check_variable(MQTT_TOPIC, 'MQTT_TOPIC')
+    logging.info(f"******************************")
 
 if __name__ == "__main__":
     try:
-        logging.info(f"******************************")
-        logging.info(f"BOX_NAME: {BOX_NAME}")
-        logging.info(f"LED_PIXEL_COUNT: {LED_PIXEL_COUNT}")
-        logging.info(f"IMAGE_CRON: {IMAGE_CRON}")
-        logging.info(f"ENV_CRON: {ENV_CRON}")
-        logging.info(f"******************************")
-        logging.info(f"COLOR_W: {COLOR_W}")
-        logging.info(f"COLOR_R: {COLOR_R}")
-        logging.info(f"COLOR_G: {COLOR_G}")
-        logging.info(f"COLOR_B: {COLOR_B}")
-        logging.info(f"******************************")
-        logging.info(f"BLOB_STORAGE_URL: {BLOB_STORAGE_URL}")
-        logging.info(f"BLOB_STORAGE_ACCESS_KEY: {BLOB_STORAGE_ACCESS_KEY}")
-        logging.info(f"BLOB_STORAGE_SECRET_KEY: {BLOB_STORAGE_SECRET_KEY}")
-        logging.info(f"BLOB_STORAGE_BUCKET: {BLOB_STORAGE_BUCKET}")
-        logging.info(f"******************************")
-        logging.info(f"MQTT_BROKER_URL: {MQTT_BROKER_URL}")
-        logging.info(f"MQTT_BROKER_PORT: {MQTT_BROKER_PORT}")
-        logging.info(f"MQTT_BROKER_USERNAME: {MQTT_BROKER_USERNAME}")
-        logging.info(f"MQTT_BROKER_PASSWORD: {MQTT_BROKER_PASSWORD}")
-        logging.info(f"MQTT_TOPIC: {MQTT_TOPIC}")
-        logging.info(f"******************************")
+        __validate_env_var()
 
         main()
     except S3Error as exc:
