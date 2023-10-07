@@ -40,6 +40,15 @@ todo:
 OTA:
 https://www.youtube.com/watch?v=_uTZad8RMZk
 
+todo:
+device data:
+- mac
+- uptime
+- avg. load
+- free diskspace
+- ram consumption
+https://thingsboard.io/docs/devices-library/raspberry-pi-zero-w/?minicomputersDashboard=importedDashboard
+
 todo
 reverse ssh:
 https://unix.stackexchange.com/questions/46235/how-does-reverse-ssh-tunneling-work
@@ -50,6 +59,9 @@ reaserch about:
 https://thingsboard.io/
 https://digitalhub.readthedocs.io/en/latest/docs/intro.html
 nifi
+
+to ciekawe o mqtt
+https://sci-hub.se/10.1109/nics48868.2019.9023812
 
 
 cron setup: https://crontab.guru/#*/2_*_*_*_*

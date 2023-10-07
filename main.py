@@ -63,6 +63,8 @@ def __create_image_files(files):
             pixels.fill((0, 0, 0))
 
         camera = PiCamera()
+        camera.resolution = (2592, 1944)
+
         camera.start_preview()
         light_on(COLOR_W)
         sleep(3)
