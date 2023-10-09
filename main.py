@@ -271,7 +271,8 @@ def env_job():
         "device": {
             "host": socket.gethostname(),
             "ip-address": __get_ip()
-        }
+        },
+        "hardware": __get_host_data()
     }
 
     client = mqtt.Client()
@@ -293,7 +294,8 @@ def start_info():
             "name": BOX_NAME,
             "host": socket.gethostname(),
             "ip-address": __get_ip()
-        }
+        },
+        "hardware": __get_host_data()
     }
 
     client = mqtt.Client()
