@@ -120,11 +120,13 @@ def __get_host_data():
     used = (st.f_blocks - st.f_bfree) * st.f_frsize
     boot_time = os.popen('uptime -p').read()[:-1]
     avg_load = (cpu_usage + ram_usage) / 2
+    temperature = os.popen("vcgencmd measure_temp").readline()
 
     return {
         'ip_address': ip_address,
         'macaddress': mac_address,
         'cpu_usage': cpu_usage,
+        'cpu_temperature': temperature,
         'processes_count': processes_count,
         'disk_usage': used,
         'RAM_usage': ram_usage,
