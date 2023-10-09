@@ -3,8 +3,8 @@ import datetime
 import json
 import logging
 import os
-import sys
 import socket
+import sys
 from time import sleep
 
 import adafruit_sht4x
@@ -46,8 +46,11 @@ MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
 pixels = neopixel.NeoPixel(board.D18, int(LED_PIXEL_COUNT))
 
+
 def __get_ip():
-    return [(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]
+    return [(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in
+            [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]
+
 
 def __create_image_files(files):
     try:
@@ -99,6 +102,38 @@ def __get_env_data():
     return {"temp": sht.temperature, "hum": sht.relative_humidity}
 
 
+def __get_host_data():
+    cpu_usage = round(float(os.popen(
+        '''grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage }' ''').readline().replace(
+        '\n', '').replace(',', '.')), 2)
+    ip_address = os.popen('''hostname -I''').readline().replace('\n', '').replace(',', '.')[:-1]
+    mac_address = os.popen('''cat /sys/class/net/*/address''').readline().replace('\n', '').replace(',', '.')
+    processes_count = os.popen('''ps -Al | grep -c bash''').readline().replace('\n', '').replace(',', '.')[:-1]
+    swap_memory_usage = os.popen("free -m | grep Swap | awk '{print ($3/$2)*100}'").readline().replace('\n',
+                                                                                                       '').replace(',',
+                                                                                                                   '.')[
+                        :-1]
+    ram_usage = float(
+        os.popen("free -m | grep Mem | awk '{print ($3/$2) * 100}'").readline().replace('\n', '').replace(',', '.')[
+        :-1])
+    st = os.statvfs('/')
+    used = (st.f_blocks - st.f_bfree) * st.f_frsize
+    boot_time = os.popen('uptime -p').read()[:-1]
+    avg_load = (cpu_usage + ram_usage) / 2
+
+    return {
+        'ip_address': ip_address,
+        'macaddress': mac_address,
+        'cpu_usage': cpu_usage,
+        'processes_count': processes_count,
+        'disk_usage': used,
+        'RAM_usage': ram_usage,
+        'swap_memory_usage': swap_memory_usage,
+        'boot_time': boot_time,
+        'avg_load': avg_load
+    }
+
+
 def __create_metadata_file(files):
     try:
         logging.info(f"creating metadata for files '{files}'.")
@@ -118,10 +153,16 @@ def __create_metadata_file(files):
                 "image-g": files["image-g"][2],
                 "image-b": files["image-b"][2]
             },
+            "led-fill": {
+                "R": COLOR_R,
+                "G": COLOR_G,
+                "B": COLOR_B
+            },
             "device": {
                 "host": socket.gethostname(),
                 "ip-address": __get_ip()
             },
+            "hardware": __get_host_data(),
             "image-cron": IMAGE_CRON,
             "env-cron": ENV_CRON,
             "led-count": LED_PIXEL_COUNT
@@ -285,12 +326,14 @@ def main():
     except (KeyboardInterrupt, SystemExit):
         pass
 
+
 def __check_variable(var, str):
     logging.info(f"str: {var}")
     if var is None:
         message = f"environment variable {str} is not set!"
         logging.error(message)
         raise Exception(message)
+
 
 def __validate_env_var():
     logging.info(f"******************************")
@@ -315,6 +358,7 @@ def __validate_env_var():
     __check_variable(MQTT_BROKER_PASSWORD, 'MQTT_BROKER_PASSWORD')
     __check_variable(MQTT_TOPIC, 'MQTT_TOPIC')
     logging.info(f"******************************")
+
 
 if __name__ == "__main__":
     try:

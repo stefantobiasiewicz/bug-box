@@ -40,13 +40,15 @@ todo:
 OTA:
 https://www.youtube.com/watch?v=_uTZad8RMZk
 
-todo:
+todo- review:
 device data:
 - mac
 - uptime
 - avg. load
 - free diskspace
 - ram consumption
+image data:
+- resolution
 https://thingsboard.io/docs/devices-library/raspberry-pi-zero-w/?minicomputersDashboard=importedDashboard
 
 todo
