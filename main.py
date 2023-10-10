@@ -103,36 +103,81 @@ def __get_env_data():
 
 
 def __get_host_data():
-    cpu_usage = round(float(os.popen(
-        '''grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage }' ''').readline().replace(
-        '\n', '').replace(',', '.')), 2)
     ip_address = os.popen('''hostname -I''').readline().replace('\n', '').replace(',', '.')[:-1]
-    mac_address = os.popen('''cat /sys/class/net/*/address''').readline().replace('\n', '').replace(',', '.')
-    processes_count = os.popen('''ps -Al | grep -c bash''').readline().replace('\n', '').replace(',', '.')[:-1]
-    swap_memory_usage = os.popen("free -m | grep Swap | awk '{print ($3/$2)*100}'").readline().replace('\n',
-                                                                                                       '').replace(',',
-                                                                                                                   '.')[
-                        :-1]
-    ram_usage = float(
-        os.popen("free -m | grep Mem | awk '{print ($3/$2) * 100}'").readline().replace('\n', '').replace(',', '.')[
-        :-1])
-    st = os.statvfs('/')
-    used = (st.f_blocks - st.f_bfree) * st.f_frsize
-    boot_time = os.popen('uptime -p').read()[:-1]
-    avg_load = (cpu_usage + ram_usage) / 2
-    temperature = os.popen("vcgencmd measure_temp").readline()
+    ip_address = os.popen('''hostname''').readline().replace('\n', '').replace(',', '.')[:-1]
+    mac_address = os.popen('''cat /sys/class/net/wlan0/address''').readline().replace('\n', '').replace(',', '.')
+
+    # Return network information as a tuple
+    # Index 0: Hostname
+    # Index 1: IP Address
+    # Index 2: MAC Address
+    def __get_network_info():
+        hostname = os.popen('''hostname''').readline().replace('\n', '').replace(',', '.')
+        ip_address = os.popen('''hostname -I''').readline().replace('\n', '').replace(',', '.')
+        mac_address = os.popen('''cat /sys/class/net/wlan0/address''').readline().replace('\n', '').replace(',',
+                                                                                                            '.')
+        return (hostname, ip_address, mac_address)
+
+
+    # Return CPU temperature as a character string
+    def __get_cpu_temperature():
+        res = os.popen('vcgencmd measure_temp').readline()
+        return (res.replace("temp=", "").replace("'C\n", ""))
+
+    # Return % of CPU used by user as a character string
+    def __get_cpu_use():
+        return (str(os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip()))
+
+    # Return RAM information (unit=kb) in a list
+    # Index 0: total RAM
+    # Index 1: used RAM
+    # Index 2: free RAM
+    def __get_ram_info():
+        p = os.popen('free -h')
+        i = 0
+        while 1:
+            i = i + 1
+            line = p.readline()
+            if i == 2:
+                return (line.split()[1:4])
+
+    # Return information about disk space as a list (unit included)
+    # Index 0: total disk space
+    # Index 1: used disk space
+    # Index 2: remaining disk space
+    # Index 3: percentage of disk used
+    def __get_disk_space():
+        p = os.popen("df -h /")
+        i = 0
+        while 1:
+            i = i + 1
+            line = p.readline()
+            if i == 2:
+                return (line.split()[1:5])
+
+    def __get_boot_time():
+        return os.popen('uptime -p').read()[:-1]
 
     return {
-        'ip_address': ip_address,
-        'macaddress': mac_address,
-        'cpu_usage': cpu_usage,
-        'cpu_temperature': temperature,
-        'processes_count': processes_count,
-        'disk_usage': used,
-        'RAM_usage': ram_usage,
-        'swap_memory_usage': swap_memory_usage,
-        'boot_time': boot_time,
-        'avg_load': avg_load
+        'hostname': __get_network_info()[0],
+        'ip-address': __get_network_info()[1],
+        'macaddress': __get_network_info()[2],
+        'cpu': {
+            'usage': __get_cpu_use(),
+            'temperature': __get_cpu_temperature()
+        },
+        'ram': {
+            "total": __get_ram_info()[0],
+            "used": __get_ram_info()[1],
+            "free": __get_ram_info()[2]
+        },
+        'disk': {
+            'total': __get_disk_space()[0],
+            'used ': __get_disk_space()[1],
+            'remaining ': __get_disk_space()[2],
+            'percentage': __get_disk_space()[3]
+        },
+        'boot-time': __get_boot_time()
     }
 
 
@@ -160,11 +205,7 @@ def __create_metadata_file(files):
                 "G": COLOR_G,
                 "B": COLOR_B
             },
-            "device": {
-                "host": socket.gethostname(),
-                "ip-address": __get_ip()
-            },
-            "hardware": __get_host_data(),
+            "device": __get_host_data(),
             "image-cron": IMAGE_CRON,
             "env-cron": ENV_CRON,
             "led-count": LED_PIXEL_COUNT
@@ -270,11 +311,7 @@ def env_job():
     metadata = {
         "name": BOX_NAME,
         "env-data": env_data,
-        "device": {
-            "host": socket.gethostname(),
-            "ip-address": __get_ip()
-        },
-        "hardware": __get_host_data()
+        "device": __get_host_data()
     }
 
     client = mqtt.Client()
@@ -292,12 +329,7 @@ def start_info():
 
     data = {
         "startup": datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S"),
-        "device": {
-            "name": BOX_NAME,
-            "host": socket.gethostname(),
-            "ip-address": __get_ip()
-        },
-        "hardware": __get_host_data()
+        "device": __get_host_data()
     }
 
     client = mqtt.Client()
