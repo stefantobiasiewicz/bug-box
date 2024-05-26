@@ -37,11 +37,11 @@ echo "testing hardware - pls look for"
 cd ../test
 
 echo "testing light"
-python3 light-test.py
+sudo python3 light-test.py
 echo "testing sht sensor"
-python3 sht-test.py
+sudo python3 sht-test.py
 echo "testing camera"
-python3 camera-test.py
+sudo python3 camera-test.py
 
 echo "instaling app to '/opt/bug-box'"
 
