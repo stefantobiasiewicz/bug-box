@@ -28,9 +28,6 @@ IMAGE_CRON = os.getenv("IMAGE_CRON", "*/7 * * * *")
 ENV_CRON = os.getenv("ENV_CRON", "*/1 * * * *")
 
 COLOR_W = os.getenv("COLOR_W", "255, 255, 255")
-COLOR_R = os.getenv("COLOR_R", "255, 0, 0")
-COLOR_G = os.getenv("COLOR_G", "0, 255, 0")
-COLOR_B = os.getenv("COLOR_B", "0, 0, 255")
 
 BLOB_STORAGE_URL = os.getenv("BLOB_STORAGE_URL")
 BLOB_STORAGE_ACCESS_KEY = os.getenv("BLOB_STORAGE_ACCESS_KEY")
@@ -72,19 +69,6 @@ def __create_image_files(files):
         light_on(COLOR_W)
         sleep(3)
         camera.capture(files["image"][1])
-
-        light_on(COLOR_R)
-        sleep(1)
-        camera.capture(files["image-r"][1])
-
-        light_on(COLOR_G)
-        sleep(1)
-        camera.capture(files["image-g"][1])
-
-        light_on(COLOR_B)
-        sleep(1)
-        camera.capture(files["image-b"][1])
-
         camera.stop_preview()
 
         light_off()
@@ -103,10 +87,6 @@ def __get_env_data():
 
 
 def __get_host_data():
-    ip_address = os.popen('''hostname -I''').readline().replace('\n', '').replace(',', '.')[:-1]
-    ip_address = os.popen('''hostname''').readline().replace('\n', '').replace(',', '.')[:-1]
-    mac_address = os.popen('''cat /sys/class/net/wlan0/address''').readline().replace('\n', '').replace(',', '.')
-
     # Return network information as a tuple
     # Index 0: Hostname
     # Index 1: IP Address
@@ -200,11 +180,6 @@ def __create_metadata_file(files):
                 "image-g": files["image-g"][2],
                 "image-b": files["image-b"][2]
             },
-            "led-fill": {
-                "R": COLOR_R,
-                "G": COLOR_G,
-                "B": COLOR_B
-            },
             "device": __get_host_data(),
             "image-cron": IMAGE_CRON,
             "env-cron": ENV_CRON,
@@ -259,9 +234,6 @@ def __put_files_to_minio_blob_storage(files):
 
         client.fput_object(BLOB_STORAGE_BUCKET, files["metadata"][2], files["metadata"][1])
         client.fput_object(BLOB_STORAGE_BUCKET, files["image"][2], files["image"][1])
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image-r"][2], files["image-r"][1])
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image-g"][2], files["image-g"][1])
-        client.fput_object(BLOB_STORAGE_BUCKET, files["image-b"][2], files["image-b"][1])
     except Exception as ex:
         logging.error(f"Can't save files: {str(ex)}.")
 
@@ -269,24 +241,15 @@ def __put_files_to_minio_blob_storage(files):
 def __delete_files(files):
     os.remove(files["metadata"][1])
     os.remove(files["image"][1])
-    os.remove(files["image-r"][1])
-    os.remove(files["image-g"][1])
-    os.remove(files["image-b"][1])
 
 
 def image_job():
     now = datetime.datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
     image_file_name = f"image-{now}.jpg"
-    image_r_file_name = f"image-r-{now}.jpg"
-    image_g_file_name = f"image-g-{now}.jpg"
-    image_b_file_name = f"image-b-{now}.jpg"
     metadata_file_name = f"metadata-{now}.json"
 
     files = {
         'image': (image_file_name, f'/tmp/{image_file_name}', f'{BOX_NAME}/images/{image_file_name}'),
-        'image-r': (image_r_file_name, f'/tmp/{image_r_file_name}', f'{BOX_NAME}/images/color/{image_r_file_name}'),
-        'image-g': (image_g_file_name, f'/tmp/{image_g_file_name}', f'{BOX_NAME}/images/color/{image_g_file_name}'),
-        'image-b': (image_b_file_name, f'/tmp/{image_b_file_name}', f'{BOX_NAME}/images/color/{image_b_file_name}'),
         'metadata': (metadata_file_name, f'/tmp/{metadata_file_name}', f'{BOX_NAME}/metadata/{metadata_file_name}')
     }
 
@@ -379,9 +342,6 @@ def __validate_env_var():
     __check_variable(ENV_CRON, 'ENV_CRON')
     logging.info(f"******************************")
     __check_variable(COLOR_W, 'COLOR_W')
-    __check_variable(COLOR_R, 'COLOR_R')
-    __check_variable(COLOR_G, 'COLOR_G')
-    __check_variable(COLOR_B, 'COLOR_B')
     logging.info(f"******************************")
     __check_variable(BLOB_STORAGE_URL, 'BLOB_STORAGE_URL')
     __check_variable(BLOB_STORAGE_ACCESS_KEY, 'BLOB_STORAGE_ACCESS_KEY')
