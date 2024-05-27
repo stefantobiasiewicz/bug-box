@@ -175,10 +175,7 @@ def __create_metadata_file(files):
             "name": BOX_NAME,
             "env-data": env_data,
             "images": {
-                "image": files["image"][2],
-                "image-r": files["image-r"][2],
-                "image-g": files["image-g"][2],
-                "image-b": files["image-b"][2]
+                "image": files["image"][2]
             },
             "device": __get_host_data(),
             "image-cron": IMAGE_CRON,
