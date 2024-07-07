@@ -229,6 +229,12 @@ def __put_files_to_minio_blob_storage(files):
             logging.info(f"Bucket '{BLOB_STORAGE_BUCKET}' not exists, creating new one.")
             client.make_bucket(BLOB_STORAGE_BUCKET)
 
+        found = client.bucket_exists(BLOB_STORAGE_BUCKET+'/latest')
+        if not found:
+            logging.info(f"Bucket '{BLOB_STORAGE_BUCKET+'/latest'}' not exists, creating new one.")
+            client.make_bucket(BLOB_STORAGE_BUCKET+'/latest')
+
+
         client.fput_object(BLOB_STORAGE_BUCKET, files["metadata"][2], files["metadata"][1])
         client.fput_object(BLOB_STORAGE_BUCKET, files["image"][2], files["image"][1])
         client.fput_object(BLOB_STORAGE_BUCKET+'/latest', "latest", files["image"][1])
