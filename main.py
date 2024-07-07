@@ -237,7 +237,7 @@ def __put_files_to_minio_blob_storage(files):
 
         client.fput_object(BLOB_STORAGE_BUCKET, files["metadata"][2], files["metadata"][1])
         client.fput_object(BLOB_STORAGE_BUCKET, files["image"][2], files["image"][1])
-        client.fput_object(BLOB_STORAGE_BUCKET+'/latest', "latest", files["image"][1])
+        client.fput_object(BLOB_STORAGE_BUCKET+'/latest', "latest.jpeg", files["image"][1])
     except Exception as ex:
         logging.error(f"Can't save files: {str(ex)}.")
 
